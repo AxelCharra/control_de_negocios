@@ -38,21 +38,25 @@ if 'usuario_logueado' not in st.session_state:
             with tab_registro:
                 with st.form("registro_form"):
                     st.markdown("Completá los datos para registrar tu negocio.")
-                    nuevo_user = st.text_input("Elige un nombre de usuario").lower().strip()
-                    nuevo_email = st.text_input("Correo electrónico").lower().strip()
-                    nueva_pass = st.text_input("Crea una contraseña", type="password")
-                    confirma_pass = st.text_input("Repite la contraseña", type="password")
+                    reg_nombre = st.text_input("Tu nombre (Ej: Axel)").strip()
+                    reg_usuario = st.text_input("Elige un nombre de usuario").lower().strip()
+                    reg_email = st.text_input("Correo electrónico").lower().strip()
+                    reg_nueva_pass = st.text_input("Crea una contraseña", type="password")
+                    reg_confirma_pass = st.text_input("Repite la contraseña", type="password")
+                    
                     submit_registro = st.form_submit_button("Registrarse", use_container_width=True)
                     
                     if submit_registro:
-                        if not nuevo_user or not nuevo_email or not nueva_pass:
-                            st.warning("Completá todos los campos.")
-                        elif nueva_pass != confirma_pass:
+                        if not reg_usuario or not reg_email or not reg_nueva_pass or not reg_nombre:
+                            st.warning("Completá todos los campos, por favor.")
+                        elif reg_nueva_pass != reg_confirma_pass:
                             st.error("❌ Las contraseñas no coinciden.")
                         else:
-                            exito, msj = db.registrar_usuario_db(nuevo_user, nuevo_email, nueva_pass)
+                            # Le pasamos el reg_nombre a la función
+                            exito, msj = db.registrar_usuario(reg_usuario, reg_email, reg_nombre, reg_nueva_pass)
                             if exito:
-                                st.success(f"{msj} Ve a la pestaña 'Ingresar'.")
+                                st.success(msj)
+                                st.info("Ve a la pestaña 'Ingresar' para iniciar sesión.")
                             else:
                                 st.error(msj)
                                 
