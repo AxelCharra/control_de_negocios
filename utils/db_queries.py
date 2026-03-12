@@ -456,18 +456,24 @@ def hashear_password(password):
     import hashlib # Por si no lo pusiste arriba de todo
     return hashlib.sha256(password.encode()).hexdigest()
 
-def registrar_usuario_db(username, email, password):
+def registrar_usuario(usuario, email, nombre, negocio, password):
     conn = obtener_conexion_activa()
     with conn.cursor() as cur:
         try:
-            cur.execute("SELECT id FROM usuarios WHERE username = %s OR email = %s;", (username, email))
+            # Verificamos si el usuario o el email ya existen
+            cur.execute("SELECT id FROM usuarios WHERE usuario = %s OR email = %s;", (usuario, email))
             if cur.fetchone():
-                return False, "El nombre de usuario o email ya está registrado."
+                return False, "El usuario o correo ya están registrados."
             
             pw_hash = hashear_password(password)
-            cur.execute("INSERT INTO usuarios (username, email, password_hash) VALUES (%s, %s, %s);", (username, email, pw_hash))
+            
+            # Ahora insertamos los 4 campos: usuario, email, nombre y negocio
+            cur.execute(
+                "INSERT INTO usuarios (usuario, email, nombre, negocio, password_hash) VALUES (%s, %s, %s, %s, %s);",
+                (usuario, email, nombre, negocio, pw_hash)
+            )
             conn.commit()
-            return True, "¡Cuenta creada con éxito! Ya podés iniciar sesión."
+            return True, "¡Cuenta creada con éxito! Ya podés ingresar."
         except Exception as e:
             conn.rollback()
             return False, f"Error al registrar: {e}"
