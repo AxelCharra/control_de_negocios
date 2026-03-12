@@ -40,8 +40,8 @@ if 'usuario_logueado' not in st.session_state:
                     st.markdown("Completá los datos para registrar tu cuenta.")
                     
                     # Pedimos los datos personales y comerciales
-                    reg_nombre = st.text_input("Tu nombre personal (Ej: Axel)").strip()
-                    reg_negocio = st.text_input("Nombre de tu negocio (Ej: Mambalytics)").strip()
+                    reg_nombre = st.text_input("Tu nombre personal (Ej: Juan)").strip()
+                    reg_negocio = st.text_input("Nombre de tu negocio (Ej: Moda Showroom)").strip()
                     
                     # Datos de acceso
                     st.markdown("---")
