@@ -37,9 +37,15 @@ if 'usuario_logueado' not in st.session_state:
             # --- PESTAÑA REGISTRO ---
             with tab_registro:
                 with st.form("registro_form"):
-                    st.markdown("Completá los datos para registrar tu negocio.")
-                    reg_nombre = st.text_input("Tu nombre (Ej: Axel)").strip()
-                    reg_usuario = st.text_input("Elige un nombre de usuario").lower().strip()
+                    st.markdown("Completá los datos para registrar tu cuenta.")
+                    
+                    # Pedimos los datos personales y comerciales
+                    reg_nombre = st.text_input("Tu nombre personal (Ej: Axel)").strip()
+                    reg_negocio = st.text_input("Nombre de tu negocio (Ej: Mambalytics)").strip()
+                    
+                    # Datos de acceso
+                    st.markdown("---")
+                    reg_usuario = st.text_input("Elige un nombre de usuario (sin espacios)").lower().strip()
                     reg_email = st.text_input("Correo electrónico").lower().strip()
                     reg_nueva_pass = st.text_input("Crea una contraseña", type="password")
                     reg_confirma_pass = st.text_input("Repite la contraseña", type="password")
@@ -47,13 +53,15 @@ if 'usuario_logueado' not in st.session_state:
                     submit_registro = st.form_submit_button("Registrarse", use_container_width=True)
                     
                     if submit_registro:
-                        if not reg_usuario or not reg_email or not reg_nueva_pass or not reg_nombre:
+                        if not reg_usuario or not reg_email or not reg_nueva_pass or not reg_nombre or not reg_negocio:
                             st.warning("Completá todos los campos, por favor.")
+                        elif " " in reg_usuario:
+                            st.error("❌ El nombre de usuario no puede tener espacios.")
                         elif reg_nueva_pass != reg_confirma_pass:
                             st.error("❌ Las contraseñas no coinciden.")
                         else:
-                            # Le pasamos el reg_nombre a la función
-                            exito, msj = db.registrar_usuario(reg_usuario, reg_email, reg_nombre, reg_nueva_pass)
+                            # Le pasamos los 4 datos (incluyendo reg_negocio) a la base de datos
+                            exito, msj = db.registrar_usuario(reg_usuario, reg_email, reg_nombre, reg_negocio, reg_nueva_pass)
                             if exito:
                                 st.success(msj)
                                 st.info("Ve a la pestaña 'Ingresar' para iniciar sesión.")
