@@ -461,7 +461,7 @@ def registrar_usuario(usuario, email, nombre, negocio, password):
     with conn.cursor() as cur:
         try:
             # Verificamos si el usuario o el email ya existen
-            cur.execute("SELECT id FROM usuarios WHERE usuario = %s OR email = %s;", (usuario, email))
+            cur.execute("SELECT id FROM usuarios WHERE LOWER(usuario) = LOWER(%s) OR LOWER(email) = LOWER(%s);", (usuario, email))
             if cur.fetchone():
                 return False, "El usuario o correo ya están registrados."
             
